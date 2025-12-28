@@ -1,11 +1,12 @@
 const express = require("express");
 const morgan = require("morgan");
+const path = require("path");
 const cors = require("cors");
 
 const app = express();
 
 app.use(cors());
-app.use(express.static("dist"));
+app.use(express.json());
 app.use(morgan("tiny"));
 
 let persons = [
@@ -58,9 +59,7 @@ app.post("/api/persons", (request, response) => {
   response.json(person);
 });
 
-app.get("*", (req, res) => {
-  res.sendFile(path.resolve(__dirname, "dist", "index.html"));
-});
+app.use(express.static("dist"));
 
 const PORT = process.env.port || 3001;
 app.listen(PORT, () => {
