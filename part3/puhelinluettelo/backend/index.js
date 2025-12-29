@@ -57,7 +57,8 @@ app.post("/api/persons", (request, response) => {
 // Delete user from button next to name
 app.delete("/api/persons/:id", (request, response) => {
   const id = request.params.id;
-  People.findByIdAndRemove(id).then(() => {
+  console.log(`Deleting person with id ${id}`);
+  People.deleteOne({ _id: id }).then(() => {
     response.status(204).end();
   });
 });
