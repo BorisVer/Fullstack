@@ -12,7 +12,7 @@ app.use(express.json());
 app.use(morgan("tiny"));
 
 // Get all people
-app.get("/api/persons", (request, response) => {
+app.get("/api/persons", (request, response, next) => {
   People.find({})
     .then((people) => {
       response.json(people);
@@ -21,7 +21,7 @@ app.get("/api/persons", (request, response) => {
 });
 
 // Info about the website
-app.get("/info", (request, response) => {
+app.get("/info", (request, response, next) => {
   const date = new Date();
   People.find({})
     .then((people) => {
@@ -33,7 +33,7 @@ app.get("/info", (request, response) => {
 });
 
 // Search a single person
-app.get("/api/persons/:id", (request, response) => {
+app.get("/api/persons/:id", (request, response, next) => {
   const id = request.params.id;
   People.findById(id)
     .then((person) => {
@@ -47,7 +47,7 @@ app.get("/api/persons/:id", (request, response) => {
 });
 
 // Add a person from the text fields
-app.post("/api/persons", (request, response) => {
+app.post("/api/persons", (request, response, next) => {
   const body = request.body;
 
   if (!body.name || !body.number) {
@@ -68,7 +68,7 @@ app.post("/api/persons", (request, response) => {
 });
 
 // Delete user from button next to name
-app.delete("/api/persons/:id", (request, response) => {
+app.delete("/api/persons/:id", (request, response, next) => {
   const id = request.params.id;
   console.log(`Deleting person with id ${id}`);
   People.deleteOne({ _id: id })
