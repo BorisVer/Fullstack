@@ -52,13 +52,22 @@ const App = () => {
 
     const newPerson = { name: newName, number: newNumber };
 
-    personServices.create(newPerson).then((returnedPerson) => {
-      setPersons(persons.concat(returnedPerson));
-      setMessage({ text: `Added ${returnedPerson.name}`, type: "success" });
-      setTimeout(() => setMessage(null), 5000);
-      setNewName("");
-      setNewNumber("");
-    });
+    personServices
+      .create(newPerson)
+      .then((returnedPerson) => {
+        setPersons(persons.concat(returnedPerson));
+        setMessage({ text: `Added ${returnedPerson.name}`, type: "success" });
+        setTimeout(() => setMessage(null), 5000);
+        setNewName("");
+        setNewNumber("");
+      })
+      .catch((error) => {
+        setMessage({
+          text: `${error.response.data.error}`,
+          type: "error",
+        });
+        setTimeout(() => setMessage(null), 5000);
+      });
   };
 
   const handleNoteChange = (event) => {
