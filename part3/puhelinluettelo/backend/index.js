@@ -13,27 +13,37 @@ app.use(morgan("tiny"));
 
 // Get all people
 app.get("/api/persons", (request, response) => {
-  People.find({}).then((people) => {
-    response.json(people);
-  });
+  People.find({})
+    .then((people) => {
+      response.json(people);
+    })
+    .catch((error) => next(error));
 });
 
 // Info about the website
 app.get("/info", (request, response) => {
   const date = new Date();
-  People.find({}).then((people) => {
-    response.send(
-      `Phonebook has info for ${people.length} people<br><br>${date}`,
-    );
-  });
+  People.find({})
+    .then((people) => {
+      response.send(
+        `Phonebook has info for ${people.length} people<br><br>${date}`,
+      );
+    })
+    .catch((error) => next(error));
 });
 
 // Search a single person
 app.get("/api/persons/:id", (request, response) => {
   const id = request.params.id;
-  People.findById(id).then((person) => {
-    response.json(person);
-  });
+  People.findById(id)
+    .then((person) => {
+      if (person) {
+        response.json(person);
+      } else {
+        response.status(404).end();
+      }
+    })
+    .catch((error) => next(error));
 });
 
 // Add a person from the text fields
@@ -49,19 +59,40 @@ app.post("/api/persons", (request, response) => {
     number: body.number,
   });
 
-  person.save().then((saved) => {
-    response.json(saved);
-  });
+  person
+    .save()
+    .then((saved) => {
+      response.json(saved);
+    })
+    .catch((error) => next(error));
 });
 
 // Delete user from button next to name
 app.delete("/api/persons/:id", (request, response) => {
   const id = request.params.id;
   console.log(`Deleting person with id ${id}`);
-  People.deleteOne({ _id: id }).then(() => {
-    response.status(204).end();
-  });
+  People.deleteOne({ _id: id })
+    .then(() => {
+      response.status(204).end();
+    })
+    .catch((error) => next(error));
 });
+
+// Unknown endpoint
+const unknownEndpoint = (request, response) => {
+  response.status(404).send({ error: "unknown endpoint" });
+};
+app.use(unknownEndpoint);
+
+// Error
+const errorHandler = (error, request, response, next) => {
+  console.error(error.message);
+  if (error.name === "CastError") {
+    return response.status(400).send({ eroor: "malformatted id" });
+  }
+  next(error);
+};
+app.use(errorHandler);
 
 app.use(express.static("dist"));
 
