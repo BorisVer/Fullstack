@@ -7,11 +7,13 @@ const People = require("./models/person");
 
 const app = express();
 
+app.use(express.static("dist"));
+
 app.use(cors());
 app.use(express.json());
 app.use(morgan("tiny"));
 
-// Get all people
+// Get all peopleyy
 app.get("/api/persons", (request, response, next) => {
   People.find({})
     .then((people) => {
@@ -97,8 +99,6 @@ const errorHandler = (error, request, response, next) => {
   next(error);
 };
 app.use(errorHandler);
-
-app.use(express.static("dist"));
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
