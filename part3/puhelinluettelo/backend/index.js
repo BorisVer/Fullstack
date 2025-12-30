@@ -7,8 +7,6 @@ const People = require("./models/person");
 
 const app = express();
 
-app.use(express.static("dist"));
-
 app.use(cors());
 app.use(express.json());
 app.use(morgan("tiny"));
@@ -79,6 +77,8 @@ app.delete("/api/persons/:id", (request, response, next) => {
     })
     .catch((error) => next(error));
 });
+
+app.use(express.static("dist"));
 
 // Unknown endpoint
 const unknownEndpoint = (request, response) => {
