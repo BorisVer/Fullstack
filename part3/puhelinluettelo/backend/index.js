@@ -78,7 +78,12 @@ app.delete("/api/persons/:id", (request, response, next) => {
     .catch((error) => next(error));
 });
 
-app.use(express.static("dist"));
+const __dirname = path.resolve();
+app.use(express.static(path.join(__dirname, "dist")));
+
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "dist", "index.html"));
+});
 
 // Unknown endpoint
 const unknownEndpoint = (request, response) => {
