@@ -44,6 +44,20 @@ describe("when there are initially some blogs saved", () => {
     const blogsAtEnd = await helper.blogsInDb();
     expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length + 1);
   });
+
+  test("blog without likes defaults to 0", async () => {
+    const newBlog = {
+      title: "blog without likes",
+      author: "Test Author",
+      url: "http://example.com",
+    };
+
+    await api.post("/api/blogs").send(newBlog).expect(201);
+
+    const blogsAtEnd = await helper.blogsInDb();
+    const addedBlog = blogsAtEnd.find((b) => b.title === "blog without likes");
+    expect(addedBlog.likes).toBe(0);
+  });
 });
 
 afterAll(async () => {
