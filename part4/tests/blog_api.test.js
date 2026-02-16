@@ -58,6 +58,16 @@ describe("when there are initially some blogs saved", () => {
     const addedBlog = blogsAtEnd.find((b) => b.title === "blog without likes");
     expect(addedBlog.likes).toBe(0);
   });
+
+  test("a blog can be deleted", async () => {
+    const blogsAtStart = await helper.blogsInDb();
+    const blogToDelete = blogsAtStart[0];
+
+    await api.delete(`/api/blogs/${blogToDelete.id}`).expect(204);
+
+    const blogsAtEnd = await helper.blogsInDb();
+    expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length - 1);
+  });
 });
 
 afterAll(async () => {
