@@ -7,6 +7,7 @@ const blogsRouter = require("./controllers/blogs");
 const usersRouter = require("./controllers/users");
 const loginRouter = require("./controllers/login");
 const { tokenExtractor } = require("./utils/middleware");
+const testingRouter = require('./controllers/testing')
 
 const app = express();
 
@@ -34,6 +35,10 @@ const errorHandler = (error, request, response, next) => {
   }
   next(error);
 };
+
+if (process.env.NODE_ENV === 'test') {
+  app.use('/api/testing', testingRouter)
+}
 
 app.use(errorHandler);
 
