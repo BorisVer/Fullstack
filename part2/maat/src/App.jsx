@@ -80,7 +80,7 @@ const CountryList = ({ countries, onSelect }) => {
 const Weather = ({ capital }) => {
   const [weather, setWeather] = useState(null)
   useEffect(() => {
-    const api_key = import.meta.env.VITE_SOME_KEY
+    const api_key = import.meta.env.VITE_WEATHER_KEY
     axios
       .get(`https://api.openweathermap.org/data/2.5/weather?q=${capital}&appid=${api_key}&units=metric`)
       .then(response => {
