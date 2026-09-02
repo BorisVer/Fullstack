@@ -26,14 +26,14 @@ const App = () => {
         find countries <input value={value} onChange={handleChange} />
       </div>
       <div>
-        <CountryList countries={countriesShow} />
+        <CountryList countries={countriesShow} onSelect={setValue} />
       </div>
     </div>
   )
 }
 
 
-const CountryList = ({ countries }) => {
+const CountryList = ({ countries, onSelect }) => {
   if (countries.length > 10) {
     return <div>Too much</div>
   }
@@ -43,7 +43,7 @@ const CountryList = ({ countries }) => {
       <div>
         {countries.map(country => (
           <div key={country.name.common}>
-            {country.name.common}
+            {country.name.common} <button onClick={() => onSelect(country.name.common)}>Show</button>
           </div>
         ))}
       </div>
@@ -63,7 +63,9 @@ const CountryList = ({ countries }) => {
             <li key={language}>{language}</li>
           ))}
         </ul>
-        <img src={country.flags.png}/>
+        <img src={country.flags.png} />
+
+        <Weather capital={country.capital[0]} />
       </div>
     )
   }
@@ -75,7 +77,30 @@ const CountryList = ({ countries }) => {
   )
 }
 
+const Weather = ({ capital }) => {
+  const [weather, setWeather] = useState(null)
+  useEffect(() => {
+    const api_key = import.meta.env.VITE_SOME_KEY
+    axios
+      .get(`https://api.openweathermap.org/data/2.5/weather?q=${capital}&appid=${api_key}&units=metric`)
+      .then(response => {
+        setWeather(response.data)
+      })
+  }, [capital])
 
+  if (!weather) {
+    return <div>Loading...</div>
+  }
+
+  return (
+      <div>
+        <h2>Weather in {capital}</h2>
+        <div>Temperature {weather.main.temp} Celsius</div>
+        <img src={`https://openweathermap.org/img/wn/${weather.weather[0].icon}@2x.png`}/>
+        <div>Wind {weather.wind.speed} m/s</div>
+      </div>
+    )
+}
 
 
 export default App
